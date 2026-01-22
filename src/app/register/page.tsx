@@ -102,6 +102,7 @@ export default function RegisterPage() {
           <input 
             type="checkbox" 
             id="training"
+            required
             className="mt-1 w-4 h-4 text-blue-600 rounded focus:ring-blue-500 border-slate-300"
             checked={formData.training}
             onChange={(e) => setFormData({...formData, training: e.target.checked})}

@@ -72,9 +72,9 @@ function LabelingInterface() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh]">
         <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-        <h3 className="text-lg font-semibold text-slate-800">Generating Content...</h3>
+        <h3 className="text-lg font-semibold text-slate-300">Generating Content...</h3>
         <p className="text-slate-500 text-sm mt-2 text-center px-4">
-          Consulting Gemini AI (Usually takes 2-5 seconds)
+          Consulting Gemini AI (Usually takes up to 30 seconds)
         </p>
       </div>
     );
