@@ -13,7 +13,8 @@ export default function RegisterPage() {
     name: '',
     age: '',
     occupation: '',
-    knowledge: 'Cultural/Linguistic',
+    writtenProficiency: 'Advanced', // Default
+    oralProficiency: 'Advanced',    // Default
     training: false,
   });
 
@@ -25,7 +26,8 @@ export default function RegisterPage() {
       name: formData.name || null,
       age: parseInt(formData.age),
       occupation: formData.occupation,
-      knowledge_area: formData.knowledge,
+      proficiency_written: formData.writtenProficiency, // Maps to DB column 'proficiency_written'
+      proficiency_oral: formData.oralProficiency,       // Maps to DB column 'proficiency_oral'
       training_received: formData.training
     }]).select().single();
 
@@ -40,7 +42,6 @@ export default function RegisterPage() {
   };
 
   return (
-    // Updated container: Less padding (p-5) and margin (mt-4) on mobile. Normal on desktop (md:).
     <div className="max-w-xl mx-auto mt-4 md:mt-8 bg-white p-5 md:p-8 rounded-xl shadow-sm border border-slate-200 text-black">
       <h2 className="text-xl md:text-2xl font-bold mb-2">Contributor Profile</h2>
       <p className="text-black mb-6 text-sm">Please tell us a bit about yourself before we begin.</p>
@@ -59,7 +60,7 @@ export default function RegisterPage() {
           />
         </div>
 
-        {/* Age & Occupation Row - Stacks on mobile (grid-cols-1), side-by-side on desktop (md:grid-cols-2) */}
+        {/* Age & Occupation Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-semibold text-black mb-1">Age</label>
@@ -75,26 +76,42 @@ export default function RegisterPage() {
             <input 
               type="text" required
               className="w-full p-3 border border-slate-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="e.g. Teacher"
+              placeholder="e.g. Student"
               value={formData.occupation}
               onChange={(e) => setFormData({...formData, occupation: e.target.value})}
             />
           </div>
         </div>
 
-        {/* Knowledge Area */}
-        <div>
-          <label className="block text-sm font-semibold text-black mb-1">Primary Knowledge Area</label>
-          <select 
-            className="w-full p-3 border border-slate-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 outline-none bg-white"
-            value={formData.knowledge}
-            onChange={(e) => setFormData({...formData, knowledge: e.target.value})}
-          >
-            <option value="Cultural/Linguistic">Cultural & Linguistic Knowledge</option>
-            <option value="Content Moderation">Content Moderation</option>
-            <option value="NLP">NLP Tasks</option>
-            <option value="Other">Other</option>
-          </select>
+        {/* Language Proficiency Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Written Kreol */}
+          <div>
+            <label className="block text-sm font-semibold text-black mb-1">Proficiency in Written Kreol Mauritian</label>
+            <select 
+              className="w-full p-3 border border-slate-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              value={formData.writtenProficiency}
+              onChange={(e) => setFormData({...formData, writtenProficiency: e.target.value})}
+            >
+              <option value="Advanced">Advanced</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Beginner">Beginner</option>
+            </select>
+          </div>
+
+          {/* Oral Kreol */}
+          <div>
+            <label className="block text-sm font-semibold text-black mb-1">Proficiency in Oral Kreol <br /> Mauritian</label>
+            <select 
+              className="w-full p-3 border border-slate-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              value={formData.oralProficiency}
+              onChange={(e) => setFormData({...formData, oralProficiency: e.target.value})}
+            >
+              <option value="Advanced">Advanced</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Beginner">Beginner</option>
+            </select>
+          </div>
         </div>
 
         {/* Training Checkbox */}
@@ -108,7 +125,7 @@ export default function RegisterPage() {
             onChange={(e) => setFormData({...formData, training: e.target.checked})}
           />
           <label htmlFor="training" className="text-sm text-black cursor-pointer leading-tight">
-            I confirm that I have received training or read the guidelines on toxicity before filling this form.
+            I confirm that I have read the guidelines on toxicity and non toxicity before filling this form.
           </label>
         </div>
 
