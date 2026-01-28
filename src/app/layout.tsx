@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Shield } from "lucide-react"; // 1. Import the icon
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
