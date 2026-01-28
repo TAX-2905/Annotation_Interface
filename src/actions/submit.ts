@@ -1,36 +1,33 @@
 'use server'
 
-// 1. MUST import from the raw package
 import { createClient } from '@supabase/supabase-js'
 
-// 2. Initialize with the Service Role Key (The "Master Key")
-// Make sure this variable name matches your .env file EXACTLY
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!, 
   {
     auth: {
-      persistSession: false, // Good practice for server-side admin scripts
+      persistSession: false,
       autoRefreshToken: false,
     }
   }
 )
 
 export async function registerUser(formData: any) {
-  // Debug Log: Check if the key is actually loaded
-  console.log("Using Key:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "Key Found (Safe to show)" : "KEY MISSING")
+  // FIX 1: Combine the form data to match your SQL 'knowledge_area' column
+  const combinedKnowledge = `Written: ${formData.writtenProficiency}, Oral: ${formData.oralProficiency}`;
 
   const { data, error } = await supabase.from('users').insert([{
     name: formData.name || null,
     age: parseInt(formData.age),
     occupation: formData.occupation,
-    proficiency_written: formData.writtenProficiency,
-    proficiency_oral: formData.oralProficiency,
+    // We map the form's proficiency fields to your DB's 'knowledge_area'
+    knowledge_area: combinedKnowledge, 
     training_received: formData.training
   }]).select().single()
 
   if (error) {
-    console.error("Supabase Error:", error) // This will show detailed error in terminal
+    console.error("Supabase Error:", error)
     throw new Error(error.message)
   }
   
@@ -38,11 +35,12 @@ export async function registerUser(formData: any) {
 }
 
 export async function saveLabel(userId: string, sentenceId: string, sentenceText: string, isToxic: boolean) {
+  // FIX 2: We REMOVE 'sentence_id' from this insert because your SQL table doesn't have that column.
   const { error } = await supabase.from('labels').insert({
     user_id: userId,
-    sentence_id: sentenceId,
     sentence_text: sentenceText,
     is_toxic: isToxic
+    // sentence_id is omitted here to match your SQL
   })
 
   if (error) throw new Error(error.message)

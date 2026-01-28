@@ -2,10 +2,10 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// ⚠️ FIXED: Using SERVICE_ROLE_KEY to bypass RLS
+// 1. Initialize with Service Role Key (Admin)
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!, // <--- THIS IS THE FIX
+  process.env.SUPABASE_SERVICE_ROLE_KEY!, 
   {
     auth: {
       persistSession: false,
@@ -15,8 +15,8 @@ const supabase = createClient(
 );
 
 export async function fetchUnlabeledBatch() {
-  console.log("Fetching batch with Admin Key..."); // Debug log
-
+  // 2. Query the 'sentences' table
+  // (Make sure this table actually exists in your DB!)
   const { data, error } = await supabase
     .from('sentences')
     .select('id, content')
@@ -24,24 +24,22 @@ export async function fetchUnlabeledBatch() {
     .limit(10); 
 
   if (error) {
-    console.error("Supabase Error:", error);
+    console.error("Fetch Error:", error);
     return [];
   }
 
-  // Debug: Check if we actually got data
-  console.log(`Found ${data?.length || 0} sentences.`);
-
-  // Shuffle
+  // 3. Shuffle (Optional, keeps it random)
   return (data || []).sort(() => Math.random() - 0.5);
 }
 
 export async function markAsLabeled(sentenceId: string) {
+    // 4. Update the 'sentences' table to mark as done
     const { error } = await supabase
       .from('sentences')
       .update({ is_labeled: true })
       .eq('id', sentenceId);
       
     if (error) {
-        console.error("Error marking sentence as labeled:", error);
+        console.error("Update Error:", error);
     }
 }
