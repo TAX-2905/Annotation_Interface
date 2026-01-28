@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { saveLabel } from '@/actions/submit';
 import { fetchUnlabeledBatch, markAsLabeled } from '@/actions/fetch'; // Import new actions
+import { createClient } from '@supabase/supabase-js'
 import { Loader2, CheckCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 export const maxDuration = 60; 
@@ -55,27 +56,27 @@ function LabelingInterface() {
     loadData();
   }, [userId, router]);
 
-  const submitLabel = async (isToxic: boolean) => {
+const submitLabel = async (isToxic: boolean) => {
     if (!userId || batch.length === 0) return;
 
     const currentSentence = batch[currentIndex];
 
-    // 1. Save the label
-    await supabase.from('labels').insert({
-      user_id: userId,
-      sentence_id: currentSentence.id, // Link to ID
-      sentence_text: currentSentence.content, // (Optional backup)
-      is_toxic: isToxic
-    });
+    try {
+      // 1. Save the label using the Server Action (Secure)
+      await saveLabel(userId, currentSentence.id, currentSentence.content, isToxic);
 
-    // 2. Mark as Labeled in the database so it disappears for others
-    await markAsLabeled(currentSentence.id);
+      // 2. Mark as Labeled (This was already a server action, so it stays)
+      await markAsLabeled(currentSentence.id);
 
-    // 3. Move to next
-    if (currentIndex < batch.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      setCompleted(true);
+      // 3. Move to next
+      if (currentIndex < batch.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        setCompleted(true);
+      }
+    } catch (error) {
+      console.error("Failed to save label:", error);
+      alert("Something went wrong saving your answer.");
     }
   };
 
