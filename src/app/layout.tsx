@@ -41,6 +41,7 @@ export default function RootLayout({
         </main>
         
         {/* ... footer ... */}
+        <Analytics />
       </body>
     </html>
   );
