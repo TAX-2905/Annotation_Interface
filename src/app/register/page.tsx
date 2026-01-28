@@ -87,7 +87,7 @@ export default function RegisterPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Written Kreol */}
           <div>
-            <label className="block text-sm font-semibold text-black mb-1">Proficiency in Written Kreol Mauritian</label>
+            <label className="block text-sm font-semibold text-black mb-1">Proficiency in Written Kreol Morisien</label>
             <select 
               className="w-full p-3 border border-slate-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 outline-none bg-white"
               value={formData.writtenProficiency}
@@ -101,7 +101,7 @@ export default function RegisterPage() {
 
           {/* Oral Kreol */}
           <div>
-            <label className="block text-sm font-semibold text-black mb-1">Proficiency in Oral Kreol <br /> Mauritian</label>
+            <label className="block text-sm font-semibold text-black mb-1">Proficiency in Oral Kreol <br /> Morisien</label>
             <select 
               className="w-full p-3 border border-slate-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 outline-none bg-white"
               value={formData.oralProficiency}
