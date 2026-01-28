@@ -2,31 +2,40 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-// FIX: Use the SERVICE_ROLE_KEY (Admin) instead of the ANON_KEY (Public)
+// ⚠️ FIXED: Using SERVICE_ROLE_KEY to bypass RLS
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! 
+  process.env.SUPABASE_SERVICE_ROLE_KEY!, // <--- THIS IS THE FIX
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    }
+  }
 );
 
 export async function fetchUnlabeledBatch() {
-  // 1. Fetch 10 sentences where 'is_labeled' is FALSE
+  console.log("Fetching batch with Admin Key..."); // Debug log
+
   const { data, error } = await supabase
     .from('sentences')
     .select('id, content')
     .eq('is_labeled', false) 
-    .limit(10); // Batch size of 10
+    .limit(10); 
 
-  if (error || !data) {
-    console.error("Error fetching batch:", error);
+  if (error) {
+    console.error("Supabase Error:", error);
     return [];
   }
 
-  // 2. Shuffle them to ensure randomness
-  return data.sort(() => Math.random() - 0.5);
+  // Debug: Check if we actually got data
+  console.log(`Found ${data?.length || 0} sentences.`);
+
+  // Shuffle
+  return (data || []).sort(() => Math.random() - 0.5);
 }
 
 export async function markAsLabeled(sentenceId: string) {
-    // 3. Mark the sentence as "Done" so it doesn't show up again
     const { error } = await supabase
       .from('sentences')
       .update({ is_labeled: true })
