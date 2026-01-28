@@ -14,16 +14,15 @@ const supabase = createClient(
 )
 
 export async function registerUser(formData: any) {
-  // FIX 1: Combine the form data to match your SQL 'knowledge_area' column
-  const combinedKnowledge = `Written: ${formData.writtenProficiency}, Oral: ${formData.oralProficiency}`;
-
   const { data, error } = await supabase.from('users').insert([{
     name: formData.name || null,
     age: parseInt(formData.age),
     occupation: formData.occupation,
-    // We map the form's proficiency fields to your DB's 'knowledge_area'
-    knowledge_area: combinedKnowledge, 
+    // FIX: Use the actual column names from your DB
+    proficiency_written: formData.writtenProficiency, 
+    proficiency_oral: formData.oralProficiency,       
     training_received: formData.training
+    // REMOVED: knowledge_area (because it doesn't exist in your table)
   }]).select().single()
 
   if (error) {
