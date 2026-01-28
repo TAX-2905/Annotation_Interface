@@ -37,6 +37,7 @@ export async function saveLabel(userId: string, sentenceId: string, sentenceText
   // FIX 2: We REMOVE 'sentence_id' from this insert because your SQL table doesn't have that column.
   const { error } = await supabase.from('labels').insert({
     user_id: userId,
+	sentence_id: sentenceId,
     sentence_text: sentenceText,
     is_toxic: isToxic
     // sentence_id is omitted here to match your SQL
