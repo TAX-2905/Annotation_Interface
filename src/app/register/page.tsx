@@ -2,9 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { registerUser } from '@/actions/submit';
+import { supabase } from '@/lib/supabase';
 import { Loader2 } from 'lucide-react';
-import { createClient } from '@supabase/supabase-js'
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -19,22 +18,27 @@ export default function RegisterPage() {
     training: false,
   });
 
-const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      // REPLACE the supabase.from('users').insert call with this:
-      const data = await registerUser(formData);
-      
-      // Success!
-      router.push(`/labeling?uid=${data.id}`);
-      
-    } catch (error) {
+    const { data, error } = await supabase.from('users').insert([{
+      name: formData.name || null,
+      age: parseInt(formData.age),
+      occupation: formData.occupation,
+      proficiency_written: formData.writtenProficiency, // Maps to DB column 'proficiency_written'
+      proficiency_oral: formData.oralProficiency,       // Maps to DB column 'proficiency_oral'
+      training_received: formData.training
+    }]).select().single();
+
+    if (error) {
       console.error(error);
       alert('Error saving details. Please try again.');
       setLoading(false);
+      return;
     }
+
+    router.push(`/labeling?uid=${data.id}`);
   };
 
   return (
