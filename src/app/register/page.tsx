@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { registerUser } from '@/actions/submit'; // Import the Server Action
 import { Loader2 } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -22,23 +22,20 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
 
-    const { data, error } = await supabase.from('users').insert([{
-      name: formData.name || null,
-      age: parseInt(formData.age),
-      occupation: formData.occupation,
-      proficiency_written: formData.writtenProficiency, // Maps to DB column 'proficiency_written'
-      proficiency_oral: formData.oralProficiency,       // Maps to DB column 'proficiency_oral'
-      training_received: formData.training
-    }]).select().single();
+    try {
+      // We pass the raw formData to the server action.
+      // The server action handles the DB insertion securely.
+      const data = await registerUser(formData);
 
-    if (error) {
-      console.error(error);
-      alert('Error saving details. Please try again.');
+      // Redirect using the ID returned by the server action
+      router.push(`/labeling?uid=${data.id}`);
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      // You might want to display the specific error message from submit.ts
+      alert(error.message || 'Error saving details. Please try again.');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push(`/labeling?uid=${data.id}`);
   };
 
   return (
