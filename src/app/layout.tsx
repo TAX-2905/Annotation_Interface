@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: 'MorisGuard',
     locale: 'en_US',
     type: 'website',
-    // NOTE: We do not need to list 'images' here. 
+    // NOTE: We do not need to list 'images' here. test
     // Next.js automatically finds 'src/app/opengraph-image.png'
   },
 };
