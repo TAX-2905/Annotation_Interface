@@ -81,15 +81,25 @@ function LabelingInterface() {
     );
   }
 
-  if (completed) {
+if (completed) {
     return (
       <div className="max-w-md mx-auto text-center mt-12 bg-white p-10 rounded-2xl shadow-sm border border-slate-200">
+        {/* 1. Green Tick */}
         <div className="flex justify-center mb-4">
             <CheckCircle size={48} className="text-green-600" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Batch Complete!</h2>
-        <button onClick={() => window.location.reload()} className="mt-4 text-blue-600 font-bold hover:underline">
-          Load More
+
+        {/* 2. Added: Thank You Message (Above Batch Complete) */}
+        <p className="mt-6 text-2xl font-bold text-slate-900 mb-6"> 
+          Thank you for your participation!
+        </p>
+
+        {/* 4. Button */}
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-6 py-3 bg-blue-50 text-blue-600 rounded-lg font-bold hover:bg-blue-100 transition"
+        >
+          Load 10 More
         </button>
       </div>
     );
